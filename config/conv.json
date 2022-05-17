@@ -1,0 +1,19 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/git-module/^1.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^4.0.0/components/context.jsonld",
+    {
+      "solid-git": "urn:solid-git:default:",
+      "solid-server": "urn:solid-server:default:"
+    }
+  ],
+
+  "@graph": [
+     {
+      "comment": "Converts Git serialization to Quad objects.",
+      "@id": "solid-git:GitToQuadConverter",
+      "@type": "GitToQuadConverter"
+
+    }
+  ]
+}
