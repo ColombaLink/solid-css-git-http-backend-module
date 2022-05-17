@@ -1,6 +1,6 @@
 {
   "@context": [
-    "https://linkedsoftwaredependencies.org/bundles/npm/git-module/^1.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-git-http-backend-module/^1.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^4.0.0/components/context.jsonld",
     {
       "solid-git": "urn:solid-git:default:",
@@ -15,7 +15,7 @@
     "files-scs:config/util/representation-conversion/converters/quad-to-rdf.json",
     "files-scs:config/util/representation-conversion/converters/rdf-to-quad.json",
 
-    "files-gm:config/conv.json"
+    "files-cghbm:config/conv.json"
   ],
   "@graph": [
 
