@@ -9,11 +9,6 @@
   ],
 
   "@graph": [
-     {
-      "comment": "Converts Git serialization to Quad objects.",
-      "@id": "solid-git:GitToQuadConverter",
-      "@type": "GitToQuadConverter"
 
-    }
   ]
 }

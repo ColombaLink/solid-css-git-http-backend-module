@@ -38,9 +38,7 @@
           "@id": "urn:solid-server:default:ChainedConverter",
           "@type": "ChainedConverter",
           "converters": [
-            {
-              "@id": "solid-git:GitToQuadConverter"
-            },
+
             {
               "@id": "urn:solid-server:default:RdfToQuadConverter"
             },

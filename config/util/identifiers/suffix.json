@@ -19,15 +19,13 @@
     {
       "comment": "Only required when using a file-based backend.",
       "@id": "urn:solid-server:default:FileIdentifierMapper",
-      "@type": "RegexBasedExtensionMapper",
-      "RegexBasedExtensionMapper:_base": {
+      "@type": "ExtensionBasedMapper",
+      "base": {
         "@id": "urn:solid-server:default:variable:baseUrl"
       },
-      "RegexBasedExtensionMapper:_rootFilepath": {
+      "rootFilepath": {
         "@id": "urn:solid-server:default:variable:rootFilePath"
-      },
-      "RegexBasedExtensionMapper:_regex": "\\/\\w\\w\\/\\w{38}$",
-      "RegexBasedExtensionMapper:_contentTypeOfRegex": "application/git"
+      }
     }
   ]
 }

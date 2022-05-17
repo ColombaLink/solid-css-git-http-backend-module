@@ -51,6 +51,7 @@
     "@types/node-fetch": "^2.5.7",
     "@types/rdf-js": "^4.0.0",
     "@types/streamify-array": "^1.0.0",
+    "@fuubi/node-git-http-backend": "^0.0.1",
     "arrayify-stream": "^1.0.0",
     "fs-extra": "^10.0.0",
     "jest-rdf": "^1.7.0",
