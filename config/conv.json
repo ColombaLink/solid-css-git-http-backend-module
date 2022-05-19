@@ -9,6 +9,11 @@
   ],
 
   "@graph": [
+    {
+      "comment": "Handles a HttpRequest including Git",
+      "@id": "css-git-http-backend-module:GitRequestHandler",
+      "@type": "GitRequestHandler"
+    }
 
   ]
 }
