@@ -1,6 +1,13 @@
 import escapeStringRegexp from 'escape-string-regexp';
 import type { HttpHandlerInput, HttpRequest } from '@solid/community-server';
-import { HttpHandler, getLoggerFor, NotImplementedHttpError } from '@solid/community-server';
+import {
+  HttpHandler,
+  getLoggerFor,
+  NotImplementedHttpError,
+  BaseFileIdentifierMapper,
+} from '@solid/community-server';
+
+import { requestHandler, defaultConfig } from '@fuubi/node-git-http-backend';
 
 /**
  * Handler that serves static resources on specific paths.
@@ -39,14 +46,13 @@ export class GitRequestHandler extends HttpHandler {
     return new RegExp(`^(?:(${files.join('|')})|(${folders.join('|')})([^?]+))(?:\\?.*)?$`, 'u');
   }
 
-  public async gitRegexFinder({ url }: HttpRequest): Promise<string> {
+  public async gitRegexFinder({ url }: HttpRequest): Promise<boolean> {
     const exp = /\/*.git\/$/u;
     const match = exp.exec(url ?? '');
     if (!match) {
-      throw new NotImplementedHttpError(`No Git resource found at ${url}`);
+      return false;
     }
-
-    return 'ok';
+    return true;
   }
 
   public async canHandle({ request }: HttpHandlerInput): Promise<void> {
@@ -61,9 +67,38 @@ export class GitRequestHandler extends HttpHandler {
 
   public async handle({ request, response }: HttpHandlerInput): Promise<void> {
     // Determine the asset to serve
-    const rex = this.gitRegexFinder(request);
+    const rex = await this.gitRegexFinder(request);
     // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
-    console.log(`handle GitHandler${rex}`);
+    console.log('is is git request ?');
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
+    console.log(rex);
+
+    if (request.method === 'POST' && rex) {
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
+      console.log(`GitRequestHandler handle POST`);
+      //
+      const fileMapper = new BaseFileIdentifierMapper('http://localhost:3000', 'C:/Users/timoc/Desktop/css-git-http-backend-module/myData/');
+      const filePath = await fileMapper.mapUrlToFilePath({ path: `${request.url}` }, false);
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
+      console.log(filePath);
+      const config = defaultConfig('C:\\Program Files\\Git\\mingw64\\libexec\\git-core\\git-http-backend', 'C:\\Users\\timoc\\Desktop\\css-git-http-backend-module\\myData\\test_folder/');
+      const gitBackendHandler = requestHandler(config);
+      gitBackendHandler(request, response);
+    }
+    if (request.method === 'GET' && rex) {
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
+      console.log(`GitRequestHandler handle GET ${request.url}`);
+      const fileMapper = new BaseFileIdentifierMapper('http://localhost:3000', 'C:/Users/timoc/Desktop/css-git-http-backend-module/myData/');
+      const filePath = await fileMapper.mapUrlToFilePath({ path: `http://localhost:3000${request.url}` }, false);
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
+      console.log(filePath);
+      const config = defaultConfig('C:\\Program Files\\Git\\mingw64\\libexec\\git-core\\git-http-backend', 'C:\\Users\\timoc\\Desktop\\css-git-http-backend-module\\myData\\repo.git');
+      const gitBackendHandler = requestHandler(config);
+      gitBackendHandler(request, response);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
+    console.log(`handle GitHandler  end ${rex}`);
     response.end();
   }
 }
