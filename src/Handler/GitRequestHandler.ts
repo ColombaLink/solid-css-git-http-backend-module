@@ -81,7 +81,7 @@ export class GitRequestHandler extends HttpHandler {
       const filePath = await fileMapper.mapUrlToFilePath({ path: `${request.url}` }, false);
       // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
       console.log(filePath);
-      const config = defaultConfig('C:\\Program Files\\Git\\mingw64\\libexec\\git-core\\git-http-backend', 'C:\\Users\\timoc\\Desktop\\css-git-http-backend-module\\myData\\test_folder/');
+      const config = defaultConfig('C:\\Program Files\\Git\\mingw64\\libexec\\git-core\\git-http-backend', 'C:/Users/timoc/Desktop/css-git-http-backend-module/myData/.test/');
       const gitBackendHandler = requestHandler(config);
       gitBackendHandler(request, response);
     }
@@ -92,7 +92,7 @@ export class GitRequestHandler extends HttpHandler {
       const filePath = await fileMapper.mapUrlToFilePath({ path: `http://localhost:3000${request.url}` }, false);
       // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
       console.log(filePath);
-      const config = defaultConfig('C:\\Program Files\\Git\\mingw64\\libexec\\git-core\\git-http-backend', 'C:\\Users\\timoc\\Desktop\\css-git-http-backend-module\\myData\\repo.git');
+      const config = defaultConfig('C:\\Program Files\\Git\\mingw64\\libexec\\git-core\\git-http-backend', 'C:/Users/timoc/Desktop/css-git-http-backend-module/myData/.test/');
       const gitBackendHandler = requestHandler(config);
       gitBackendHandler(request, response);
     }
