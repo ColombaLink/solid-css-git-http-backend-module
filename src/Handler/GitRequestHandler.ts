@@ -31,7 +31,7 @@ export class GitRequestHandler extends HttpHandler {
   }
 
   public async gitRegexFinder({ url }: HttpRequest): Promise<boolean> {
-    const exp = /\/*.git\/?/u;
+    const exp = /\/*.git\/\/?/u;
     const match = exp.exec(url ?? '');
     if (!match) {
       return false;
