@@ -14,6 +14,7 @@ export class GitRequestHandler extends HttpHandler {
   private readonly logger = getLoggerFor(this);
   private readonly rootFilePath: string;
   private readonly gitBackenPath: string;
+  private readonly gitRegex: RegExp;
 
   /**
    * Creates a handler for the provided Git resources.
@@ -21,14 +22,15 @@ export class GitRequestHandler extends HttpHandler {
    * @param gitBackendPath Path to git-http-backen
    * @param rootFilePath  Rootpath where files are stored
    */
-  public constructor(gitBackendPath: string, rootFilePath: string) {
+  public constructor(gitBackendPath: string, rootFilePath: string, gitRegex: string) {
     super();
     this.gitBackenPath = gitBackendPath;
     this.rootFilePath = rootFilePath;
+    this.gitRegex = new RegExp(gitRegex, 'u');
   }
 
   public async gitRegexFinder({ url }: HttpRequest): Promise<boolean> {
-    const exp = /\/*.git\/\/?/u;
+    const exp = this.gitRegex;
     const match = exp.exec(url ?? '');
     if (!match) {
       return false;
@@ -56,10 +58,9 @@ export class GitRequestHandler extends HttpHandler {
       gitBackendHandler(request, response);
 
       const wait = new Promise<void>((resolve, reject): void => {
-        response.on('finish', (): void => {
+        response.on('error', (): void => {
           // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
-          console.log(`finish`);
-          resolve();
+          throw new NotImplementedHttpError('Only GET and HEAD requests are supported');
         });
 
         response.on('close', (): void => {
