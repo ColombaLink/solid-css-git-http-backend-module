@@ -1,10 +1,8 @@
-import escapeStringRegexp from 'escape-string-regexp';
 import type { HttpHandlerInput, HttpRequest } from '@solid/community-server';
 import {
   HttpHandler,
   getLoggerFor,
   NotImplementedHttpError,
-  BaseFileIdentifierMapper,
 } from '@solid/community-server';
 
 import { requestHandler, defaultConfig } from '@fuubi/node-git-http-backend';
@@ -17,37 +15,23 @@ import { requestHandler, defaultConfig } from '@fuubi/node-git-http-backend';
  */
 export class GitRequestHandler extends HttpHandler {
   private readonly logger = getLoggerFor(this);
+  private readonly rootFilePath: string;
+  private readonly gitBackenPath: string;
 
   /**
-     * Creates a handler for the provided static resources.
-     * @param assets - A mapping from URL paths to paths,
-     *  where URL paths ending in a slash are interpreted as entire folders.
-     * @param options - Cache expiration time in seconds.
-     */
-  public constructor() {
+   * Creates a handler for the provided static resources.
+   *  where URL paths ending in a slash are interpreted as entire folders.
+   * @param gitBackendPath Path to git-http-backen
+   * @param rootFilePath  Rootpath where files are stored
+   */
+  public constructor(gitBackendPath: string, rootFilePath: string) {
     super();
-  }
-
-  /**
-     * Creates a regular expression that matches the URL paths.
-     */
-  private createPathMatcher(assets: Record<string, string>): RegExp {
-    // Sort longest paths first to ensure the longest match has priority
-    const paths = Object.keys(assets).sort((pathA, pathB): number => pathB.length - pathA.length);
-
-    // Collect regular expressions for files and folders separately
-    const files = ['.^'];
-    const folders = ['.^'];
-    for (const path of paths) {
-      (path.endsWith('/') ? folders : files).push(escapeStringRegexp(path));
-    }
-
-    // Either match an exact document or a file within a folder (stripping the query string)
-    return new RegExp(`^(?:(${files.join('|')})|(${folders.join('|')})([^?]+))(?:\\?.*)?$`, 'u');
+    this.gitBackenPath = gitBackendPath;
+    this.rootFilePath = rootFilePath;
   }
 
   public async gitRegexFinder({ url }: HttpRequest): Promise<boolean> {
-    const exp = /\/*.git\/$/u;
+    const exp = /\/*.git\/?/u;
     const match = exp.exec(url ?? '');
     if (!match) {
       return false;
@@ -56,33 +40,38 @@ export class GitRequestHandler extends HttpHandler {
   }
 
   public async canHandle({ request }: HttpHandlerInput): Promise<void> {
+    const isGit = await this.gitRegexFinder(request);
+    if (!isGit) {
+      throw new NotImplementedHttpError('Not Git File');
+    }
     if (request.method !== 'GET' && request.method !== 'POST' && request.method !== 'PROPFIND') {
       throw new NotImplementedHttpError('Only GET and HEAD requests are supported');
     }
-
   }
 
   public async handle({ request, response }: HttpHandlerInput): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
-    console.log(`GitRequestHandler handle GET ${request.url}`);
-    const config = defaultConfig('/usr/lib/git-core/git-http-backend', '/home/parfab00/Repositories/node-git-http-backend/dev');
-    const gitBackendHandler = requestHandler(config);
-    gitBackendHandler(request, response);
+    const isGit = await this.gitRegexFinder(request);
+    if ((request.method === 'GET' || request.method === 'POST' || request.method === 'PROPFIND') && isGit) {
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
+      console.log(`GitRequestHandler handle GET ${request.url}`);
+      const config = defaultConfig(this.gitBackenPath, this.rootFilePath);
+      const gitBackendHandler = requestHandler(config);
+      gitBackendHandler(request, response);
 
-    const wait = new Promise<void>((resolve, reject): void => {
-      response.on('finish', (): void => {
-        // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
-        console.log(`finish`);
-        resolve();
-      });
+      const wait = new Promise<void>((resolve, reject): void => {
+        response.on('finish', (): void => {
+          // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
+          console.log(`finish`);
+          resolve();
+        });
 
-      response.on('close', (): void => {
-        // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
-        console.log(`close`);
-        resolve();
+        response.on('close', (): void => {
+          // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
+          console.log(`close`);
+          resolve();
+        });
       });
-    });
-    await wait;
-    // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
+      await wait;
+    }
   }
 }

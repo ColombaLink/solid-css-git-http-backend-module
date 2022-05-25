@@ -12,7 +12,9 @@
     {
       "comment": "Handles a HttpRequest including Git",
       "@id": "css-git-http-backend-module:GitRequestHandler",
-      "@type": "GitRequestHandler"
+      "@type": "GitRequestHandler",
+      "GitRequestHandler:_rootFilePath" : "./myData",
+      "GitRequestHandler:_gitBackendPath" : "C:/Program Files/Git/mingw64/libexec/git-core/git-http-backend"
     }
 
   ]
