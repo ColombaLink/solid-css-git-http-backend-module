@@ -8,10 +8,7 @@ import {
 import { requestHandler, defaultConfig } from '@fuubi/node-git-http-backend';
 
 /**
- * Handler that serves static resources on specific paths.
- * Relative file paths are assumed to be relative to cwd.
- * Relative file paths can be preceded by `@css:`, e.g. `@css:foo/bar`,
- * in case they need to be relative to the module root.
+ * Handler that serves Git Resources which are identified by including ".git/"
  */
 export class GitRequestHandler extends HttpHandler {
   private readonly logger = getLoggerFor(this);
@@ -19,8 +16,8 @@ export class GitRequestHandler extends HttpHandler {
   private readonly gitBackenPath: string;
 
   /**
-   * Creates a handler for the provided static resources.
-   *  where URL paths ending in a slash are interpreted as entire folders.
+   * Creates a handler for the provided Git resources.
+   *  git Ressources need to include ".git/" to get handled here
    * @param gitBackendPath Path to git-http-backen
    * @param rootFilePath  Rootpath where files are stored
    */
