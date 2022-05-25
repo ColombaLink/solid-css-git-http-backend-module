@@ -15,7 +15,7 @@
       "@type": "GitRequestHandler",
       "GitRequestHandler:_rootFilePath" : "./myData",
       "GitRequestHandler:_gitBackendPath" : "C:/Program Files/Git/mingw64/libexec/git-core/git-http-backend",
-      "GitRequestHandler:_gitRegex" : "/\/*.git\/\/?"
+      "GitRequestHandler:_gitRegex" : "/\/*.git\/\/?($|git-upload-pack|git-receive-pack|info\/refs\\?service=git-upload-pack|info\/refs\\?service=git-receive-pack)"
     }
 
   ]

@@ -51,8 +51,6 @@ export class GitRequestHandler extends HttpHandler {
   public async handle({ request, response }: HttpHandlerInput): Promise<void> {
     const isGit = await this.gitRegexFinder(request);
     if ((request.method === 'GET' || request.method === 'POST' || request.method === 'PROPFIND') && isGit) {
-      // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
-      console.log(`GitRequestHandler handle GET ${request.url}`);
       const config = defaultConfig(this.gitBackenPath, this.rootFilePath);
       const gitBackendHandler = requestHandler(config);
       gitBackendHandler(request, response);
