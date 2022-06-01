@@ -1,0 +1,37 @@
+{
+  "@context":
+  ["https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^4.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-git-http-backend-module/^1.0.0/components/context.jsonld"
+  ],
+    "@graph": [
+    {
+      "comment": "Supports DPoP and Bearer access tokens, or no credentials.",
+      "@id": "urn:solid-server:default:CredentialsExtractor",
+      "@type": "UnionCredentialsExtractor",
+      "extractors": [
+        {
+          "@type": "WaterfallHandler",
+          "handlers": [
+            {
+              "@type": "UrlDPoPWebIdExtractor",
+              "UrlDPoPWebIdExtractor:_originalUrlExtractor": {
+                "@type": "OriginalUrlExtractor",
+                "args_identifierStrategy": { "@id": "urn:solid-server:default:IdentifierStrategy" }
+              }
+            },
+            {
+              "@type": "DPoPWebIdExtractor",
+              "originalUrlExtractor": {
+                "@type": "OriginalUrlExtractor",
+                "args_identifierStrategy": { "@id": "urn:solid-server:default:IdentifierStrategy" }
+              }
+            }
+          ,
+            { "@type": "BearerWebIdExtractor" }
+          ]
+        },
+        { "@type": "PublicCredentialsExtractor" }
+      ]
+    }
+  ]
+}

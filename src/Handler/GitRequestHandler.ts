@@ -58,12 +58,10 @@ export class GitRequestHandler extends HttpHandler {
       const wait = new Promise<void>((resolve, reject): void => {
         response.on('error', (): void => {
           // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
-          throw new NotImplementedHttpError('Only GET and HEAD requests are supported');
+          throw new NotImplementedHttpError('Git Request Failed');
         });
 
         response.on('close', (): void => {
-          // eslint-disable-next-line @typescript-eslint/no-base-to-string, no-console
-          console.log(`close`);
           resolve();
         });
       });
