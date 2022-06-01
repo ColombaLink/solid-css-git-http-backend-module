@@ -41,8 +41,31 @@ describe('Url DPoPWebIdExtractor', (): void => {
             await expect(result).resolves.toEqual({ [CredentialGroup.agent]: { webId: 'http://alice.example/card#me' }});
         });
     });
-
     describe('Fetch request', (): void => {
+        it('Fetch identity provider', async(): Promise<void> => {
+            const url = 'http://localhost:3000/.well-known/openid-configuration';
+            const res = await fetch(url,{method:'GET'});
+            //console.log(res)
+            if(res.body) {
+                const body =await res.json();
+                console.log(body)
+            }
+            expect(res.status).toBe(200);
+        });
+
+        it('Authorization Request', async(): Promise<void> => {
+            const url = 'http://localhost:3000/.oidc/auth?response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Falice&scope=openid%20webid%20offline_access&client_id=http%3A%2F%2Flocalhost%3A3000%2Falice%2Fwebid%23this&code_challenge_method=S256&code_challenge=HSi9dwlvRpNHCDm-L8GOdM16qcb0tLHPZqQSvaWXTI0';
+            const res = await fetch(url,{method:'GET'});
+            //console.log(res)
+            if(res.body) {
+                const body =await res;
+                console.log(body)
+            }
+            expect(res.status).toBe(200);
+        });
+    })
+
+    describe('Get request', (): void => {
         it('can do a successful GET request to a document.', async(): Promise<void> => {
             const url = 'http://alice:test@localhost:3000';
             const res = await fetch(url,{method:'GET'});
