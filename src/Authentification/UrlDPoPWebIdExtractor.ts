@@ -23,7 +23,11 @@ export class UrlDPoPWebIdExtractor extends CredentialsExtractor {
   public async canHandle({ headers }: HttpRequest): Promise<void> {
     const { authorization } = headers;
     if (!authorization) {
-      throw new NotImplementedHttpError('No DPoP-bound Authorization header specified.');
+      throw new NotImplementedHttpError('No Basic DPoP-bound Authorization header specified.');
+    }
+
+    if (!this.isBasicDpopFromAuthorization(authorization)) {
+      throw new NotImplementedHttpError('No Basic DPoP-bound Authorization header specified.');
     }
   }
 
@@ -32,27 +36,9 @@ export class UrlDPoPWebIdExtractor extends CredentialsExtractor {
    * @param request
    */
   public async handle(request: HttpRequest): Promise<CredentialSet> {
-    const { headers: { authorization }, method } = request;
+    const { headers, method } = request;
 
-    if (!authorization) {
-      throw new NotImplementedHttpError('No DPoP-bound Authorization header specified.');
-    }
-    const withoutBase = authorization.slice(6);
-    const buffer = Buffer.from(withoutBase, 'base64');
-    const decoded = buffer.toString('utf-8');
-    const splitAuth = decoded.slice(0, decoded.indexOf(':'));
-    const tokenDpop = decoded.slice(decoded.indexOf(':') + 1, decoded.length);
-    let auth: string;
-    let token: string;
-
-    if (authorization.startsWith('Base')) {
-      auth = splitAuth;
-      token = tokenDpop;
-    } else {
-      auth = 'DPoP token-1234';
-      token = 'token-5678';
-    }
-
+    const { dpop, authorization } = this.decodeDpopFromAuthorization(headers.authorization!);
     // Reconstruct the original URL as requested by the client,
     // since this is the one it used to authorize the request
     const originalUrl = await this.originalUrlExtractor.handleSafe({ request });
@@ -61,13 +47,14 @@ export class UrlDPoPWebIdExtractor extends CredentialsExtractor {
     // and extract the WebID provided by the client
     try {
       const { webid: webId } = await this.verify(
-        auth!,
+        authorization,
         {
-          header: token!,
+          header: dpop,
           method: method as RequestMethod,
           url: originalUrl.path,
         },
       );
+
       this.logger.info(`Verified WebID via DPoP-bound access token: ${webId}`);
       return { [CredentialGroup.agent]: { webId }};
     } catch (ex: unknown) {
@@ -75,5 +62,22 @@ export class UrlDPoPWebIdExtractor extends CredentialsExtractor {
       this.logger.warn(message);
       throw new BadRequestHttpError(message, { cause: ex });
     }
+  }
+
+  private decodeDpopFromAuthorization(basicAuthorization: string): { authorization: string; dpop: string } {
+    const withoutBase = basicAuthorization.slice(6);
+    const decoded = Buffer.from(withoutBase, 'base64').toString('utf-8');
+    const authorization = decoded.slice(0, decoded.indexOf(':'));
+    const dpop = decoded.slice(decoded.indexOf(':') + 1, decoded.length);
+    return {
+      dpop,
+      authorization,
+    };
+  }
+
+  private isBasicDpopFromAuthorization(authorization: string): boolean {
+    const base = authorization.slice(6);
+    return Buffer.from(base, 'base64').
+      equals(Buffer.from('Basic '));
   }
 }
