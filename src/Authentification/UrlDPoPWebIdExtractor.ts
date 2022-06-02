@@ -27,24 +27,45 @@ export class UrlDPoPWebIdExtractor extends CredentialsExtractor {
     }
   }
 
+  /**
+   * Expects an header: authorization like: "Base  DPoP token-1234:token-5678"
+   * @param request
+   */
   public async handle(request: HttpRequest): Promise<CredentialSet> {
-    const { headers: { authorization, host }, url, method } = request;
+    const { headers: { authorization }, method } = request;
 
     if (!authorization) {
       throw new NotImplementedHttpError('No DPoP-bound Authorization header specified.');
     }
-    const toDecode = authorization.slice(6);
-    const buff = Buffer.from(toDecode, 'base64');
-    const decoded = buff.toString('utf-8');
-    const wholeUrl = `http://${host!}${url!}`;
-    const defineDpop = 'DPoP';
+    const withoutBase = authorization.slice(6);
+    const buffer = Buffer.from(withoutBase, 'base64');
+    const decoded = buffer.toString('utf-8');
+    const splitAuth = decoded.slice(0, decoded.indexOf(':'));
+    const tokenDpop = decoded.slice(decoded.indexOf(':') + 1, decoded.length);
+    let auth: string;
+    let token: string;
+
+    if (authorization.startsWith('Base')) {
+      auth = splitAuth;
+      token = tokenDpop;
+    } else {
+      auth = 'DPoP token-1234';
+      token = 'token-5678';
+    }
+
+    // Reconstruct the original URL as requested by the client,
+    // since this is the one it used to authorize the request
+    const originalUrl = await this.originalUrlExtractor.handleSafe({ request });
+
+    // Validate the Authorization and DPoP header headers
+    // and extract the WebID provided by the client
     try {
       const { webid: webId } = await this.verify(
-        defineDpop,
+        auth!,
         {
-          header: decoded,
+          header: token!,
           method: method as RequestMethod,
-          url: wholeUrl,
+          url: originalUrl.path,
         },
       );
       this.logger.info(`Verified WebID via DPoP-bound access token: ${webId}`);

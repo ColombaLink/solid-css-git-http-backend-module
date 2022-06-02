@@ -19,9 +19,17 @@ describe('Url DPoPWebIdExtractor', (): void => {
     });
 
     describe('on a request with Authorization and DPop headers', (): void => {
+
+        const token = 'DPoP token-1234';
+        const dpop =  'token-5678';
+        let authorization =  Buffer.from(`${token}:${dpop}`).toString("base64");
+        authorization = 'Base  ' + authorization;
+
         const request = {
             method: 'GET',
-            url: 'http://token-5678@example.org/foo/bar'
+            headers: {
+                authorization
+            },
         } as any as HttpRequest;
 
         it('calls the target extractor with the correct parameters.', async(): Promise<void> => {
