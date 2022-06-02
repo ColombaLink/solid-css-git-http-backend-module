@@ -13,6 +13,19 @@
           "@type": "WaterfallHandler",
           "handlers": [
             {
+              "@type": "InsecureTokenExtractor",
+              "InsecureTokenExtractor:_originalUrlExtractor": {
+                "@type": "OriginalUrlExtractor",
+                "args_identifierStrategy": { "@id": "urn:solid-server:default:IdentifierStrategy" }
+              },
+              "InsecureTokenExtractor:_tokenToWebId": [
+                {
+                  "InsecureTokenExtractor:_tokenToWebId_key": "insecureToken",
+                  "InsecureTokenExtractor:_tokenToWebId_value": "http://localhost:3000/profile/card#me"
+                }
+              ]
+            },
+            {
               "@type": "UrlDPoPWebIdExtractor",
               "UrlDPoPWebIdExtractor:_originalUrlExtractor": {
                 "@type": "OriginalUrlExtractor",
