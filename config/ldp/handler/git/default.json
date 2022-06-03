@@ -1,5 +1,8 @@
 {
-  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^4.0.0/components/context.jsonld",
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-git-http-backend-module/^1.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^4.0.0/components/context.jsonld"
+  ],
   "import": [
     "files-scs:config/ldp/handler/components/authorizer.json",
     "files-scs:config/ldp/handler/components/error-handler.json",
@@ -11,7 +14,7 @@
   "@graph": [
     {
       "comment": "The main entry point into the main Solid behaviour.",
-      "@id": "urn:solid-server:default:LdpHandler",
+      "@id": "urn:solid-server:default:GitHandler",
       "@type": "ParsingHttpHandler",
       "args_requestParser": { "@id": "urn:solid-server:default:RequestParser" },
       "args_metadataCollector": { "@id": "urn:solid-server:default:OperationMetadataCollector" },
