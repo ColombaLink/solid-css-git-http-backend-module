@@ -45,7 +45,6 @@ export class InsecureTokenExtractor extends CredentialsExtractor {
    */
   public async handle(request: HttpRequest): Promise<CredentialSet> {
     const { headers } = request;
-    console.log(this.tokenToWebId);
     const { token } = this.decodeDpopFromAuthorization(headers.authorization!);
     // Reconstruct the original URL as requested by the client,
     // since this is the one it used to authorize the request

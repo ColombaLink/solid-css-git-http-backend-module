@@ -1,0 +1,16 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-git-http-backend-module/^1.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^4.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": "Handles a HttpRequest including Git",
+      "@id": "urn:css-git:default:OperationHandler",
+      "@type": "GitRequestHandler",
+      "GitRequestHandler:_rootFilePath" :  { "@id": "urn:solid-server:default:variable:rootFilePath" },
+      "GitRequestHandler:_gitBackendPath" : "/usr/lib/git-core/git-http-backend",
+      "GitRequestHandler:_gitRegex" : "/\/*.git\/\/?($|git-upload-pack|git-receive-pack|info\/refs\\?service=git-upload-pack|info\/refs\\?service=git-receive-pack)"
+    }
+  ]
+}
