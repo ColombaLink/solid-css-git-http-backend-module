@@ -39,7 +39,7 @@
     "lint": "eslint . --cache",
     "prepare": "npm run build",
     "start": "npm run build && npm run build && npx community-solid-server -c config/default.json  -m .",
-    "start:file": "npm run build && npm run build && npx community-solid-server -c config/default.json -l info  -m . -f ./myData/",
+    "start:file": "npm run build && npx community-solid-server -c config/default.json -l debug  -m . -f ./myData/",
     "test:integration": "jest --coverageReporters text-summary -- test/integration",
     "test:unit": "jest --config=./jest.coverage.config.js test/unit",
     "test:watch": "jest --coverageReporters none --watch test/unit"

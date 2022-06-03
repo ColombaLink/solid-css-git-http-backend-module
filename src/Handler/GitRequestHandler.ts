@@ -2,7 +2,7 @@ import type { HttpHandlerInput, HttpRequest } from '@solid/community-server';
 import {
   HttpHandler,
   getLoggerFor,
-  NotImplementedHttpError,
+  NotImplementedHttpError, NotFoundHttpError, MethodNotAllowedHttpError,
 } from '@solid/community-server';
 
 import { requestHandler, defaultConfig } from '@fuubi/node-git-http-backend';
@@ -41,10 +41,10 @@ export class GitRequestHandler extends HttpHandler {
   public async canHandle({ request }: HttpHandlerInput): Promise<void> {
     const isGit = await this.gitRegexFinder(request);
     if (!isGit) {
-      throw new NotImplementedHttpError('Not Git File');
+      throw new NotFoundHttpError('Not Git File');
     }
     if (request.method !== 'GET' && request.method !== 'POST' && request.method !== 'PROPFIND') {
-      throw new NotImplementedHttpError('Only GET and HEAD requests are supported');
+      throw new MethodNotAllowedHttpError([], 'Only GET and HEAD requests are supported');
     }
   }
 

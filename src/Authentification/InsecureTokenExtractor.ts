@@ -39,7 +39,7 @@ export class InsecureTokenExtractor extends CredentialsExtractor {
 
   /**
    * Expects an header: authorization like:
-   * "Authorization: Base  YWxpY2U6aW5zZWN1cmVUb2tlbg=="
+   * "Authorization: Basic  YWxpY2U6aW5zZWN1cmVUb2tlbg=="
    *                       alice:insecureToken
    * @param request
    */

@@ -1,0 +1,48 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-git-http-backend-module/^1.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^4.0.0/components/context.jsonld"
+  ],
+  "import": [
+    "files-cghbm:config/ldp/handler/git/operation-handler.json"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:solid-server:default:OperationHandler",
+      "@type": "WaterfallHandler",
+      "handlers": [
+        {
+          "@id": "urn:css-git:default:OperationHandler"
+        },
+        {
+          "@type": "GetOperationHandler",
+          "store": { "@id": "urn:solid-server:default:ResourceStore" }
+        },
+        {
+          "@type": "PostOperationHandler",
+          "store": { "@id": "urn:solid-server:default:ResourceStore"  }
+        },
+        {
+          "@type": "PutOperationHandler",
+          "store": { "@id": "urn:solid-server:default:ResourceStore" }
+        },
+        {
+          "@type": "DeleteOperationHandler",
+          "store": { "@id": "urn:solid-server:default:ResourceStore" }
+        },
+        {
+          "@type": "HeadOperationHandler",
+          "store": { "@id": "urn:solid-server:default:ResourceStore" }
+        },
+        {
+          "@type": "PatchOperationHandler",
+          "store": { "@id": "urn:solid-server:default:ResourceStore" }
+        },
+        {
+          "@type": "StaticThrowHandler",
+          "error": { "@type": "MethodNotAllowedHttpError" }
+        }
+      ]
+    }
+  ]
+}

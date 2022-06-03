@@ -6,7 +6,7 @@
   "import": [
     "files-scs:config/http/handler/handlers/oidc.json",
     "files-cghbm:config/ldp/handler/git/operation-handler.json",
-    "files-cghbm:config/ldp/handler/git/default.json"
+    "files-cghbm:config/ldp/handler/default.json"
 
   ],
   "@graph": [
@@ -19,7 +19,6 @@
         {
           "@type": "WaterfallHandler",
           "handlers": [
-            { "@id": "urn:solid-server:default:GitHandler" },
             { "@id": "urn:solid-server:default:StaticAssetHandler" },
             { "@id": "urn:solid-server:default:SetupHandler" },
             { "@id": "urn:solid-server:default:OidcHandler" },
