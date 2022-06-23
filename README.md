@@ -32,4 +32,4 @@ This Module is intended to be intergrated into the backend of the CSS.
 
 * *UrlDpopWebIdExtractor*: Is an Authentification handler an needs to be configured in config/ldp/authentification an Example configuration can be seen in the file urldpop-dpop-bearer.json
 
-* *GitRequestHandler*: Is an LDP handler an needs to be configured in config/ldp/handler an Example configuration can be seen under config/ldp/handler/default.json. The GitRequestHandler itself is defined an configured in config/ldp/handler/git/operation-handler.json
+* *GitRequestHandler*: Is an Http handler an needs to be configured in config/http/handler an Example configuration can be seen in the backend under config/http/handler/git.json. The GitRequestHandler itself is defined an configured in config/http/handler/handlers/git-request-handler.json
